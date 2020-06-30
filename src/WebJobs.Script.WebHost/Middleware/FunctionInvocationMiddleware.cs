@@ -53,7 +53,10 @@ namespace Microsoft.Azure.WebJobs.Script.WebHost.Middleware
                     return;
                 }
 
-                ActionContext actionContext = new ActionContext(context, new RouteData(), new ActionDescriptor());
+                var actionContext = new ActionContext
+                {
+                    HttpContext = context
+                };
                 await result.ExecuteResultAsync(actionContext);
             }
         }
@@ -138,30 +141,33 @@ namespace Microsoft.Azure.WebJobs.Script.WebHost.Middleware
 
         private void PopulateRouteData(HttpContext context)
         {
-            // Add route data to request info
-            // TODO: Keeping this here for now as other code depend on this property, but this can be done in the HTTP binding.
             var routingFeature = context.Features.Get<IRoutingFeature>();
 
-            var routeData = new Dictionary<string, object>(routingFeature.RouteData.Values);
-
-            // Get optional parameters that were not used and had no default
-            Route functionRoute = routingFeature.RouteData.Routers.FirstOrDefault(r => r is Route) as Route;
-
-            if (functionRoute != null)
+            if (routingFeature.RouteData.Values.Count > 0)
             {
-                var optionalParameters = functionRoute.ParsedTemplate.Parameters.Where(p => p.IsOptional && p.DefaultValue == null);
+                // Add route data to request info
+                // TODO: Keeping this here for now as other code depend on this property, but this can be done in the HTTP binding.
+                var routeData = new Dictionary<string, object>(routingFeature.RouteData.Values);
 
-                foreach (var parameter in optionalParameters)
+                // Get optional parameters that were not used and had no default
+                Route functionRoute = routingFeature.RouteData.Routers.FirstOrDefault(r => r is Route) as Route;
+
+                if (functionRoute != null)
                 {
-                    // Make sure we didn't have the parameter in the values dictionary
-                    if (!routeData.ContainsKey(parameter.Name))
+                    var optionalParameters = functionRoute.ParsedTemplate.Parameters.Where(p => p.IsOptional && p.DefaultValue == null);
+
+                    foreach (var parameter in optionalParameters)
                     {
-                        routeData.Add(parameter.Name, null);
+                        // Make sure we didn't have the parameter in the values dictionary
+                        if (!routeData.ContainsKey(parameter.Name))
+                        {
+                            routeData.Add(parameter.Name, null);
+                        }
                     }
                 }
-            }
 
-            context.Items[HttpExtensionConstants.AzureWebJobsHttpRouteDataKey] = routeData;
+                context.Items[HttpExtensionConstants.AzureWebJobsHttpRouteDataKey] = routeData;
+            }
         }
 
         private async Task<bool> AuthenticateAndAuthorizeAsync(HttpContext context, FunctionDescriptor descriptor)
