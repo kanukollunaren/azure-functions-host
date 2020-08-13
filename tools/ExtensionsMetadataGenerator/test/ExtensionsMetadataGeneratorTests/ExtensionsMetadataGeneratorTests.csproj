@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="UpdateRuntimeAssemblies">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -16,6 +16,11 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
   </ItemGroup>
 
+  <Target Name="UpdateRuntimeAssemblies" BeforeTargets="Build">
+    <Exec Command="powershell.exe –command .\..\..\src\ExtensionsMetadataGenerator\updateruntimeassemblies.ps1" />
+    <Copy SourceFiles="runtimeassemblies.txt" DestinationFolder="$(OutputPath)" />
+  </Target>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\ExtensionsMetadataGenerator.Console\ExtensionsMetadataGenerator.Console.csproj" />
     <ProjectReference Include="..\TestProject_Core21\TestProject_Core21.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" OutputItemType="Content" CopyToOutputDirectory="PreserveNewest" />

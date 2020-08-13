@@ -1,13 +1,9 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ExtensionsMetadataGenerator.Console;
-using Microsoft.Azure.WebJobs.Hosting;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace ExtensionsMetadataGeneratorTests
@@ -15,14 +11,14 @@ namespace ExtensionsMetadataGeneratorTests
     public class RuntimeAssembliesUpdateTests
     {
         public const string ExistingRuntimeAssembliesFileName = "ExistingRuntimeAssemblies.txt";
-        public const string GeneratedRuntimeAssembliesFileName = @"../../../../../src/ExtensionsMetadataGenerator/runtimeassemblies.txt";
+        public const string GeneratedRuntimeAssembliesFileName = @"runtimeassemblies.txt";
         public const string DiffListFileName = "DiffList.txt";
 
         [Fact]
         public void VerifyGeneratedRuntimeAssemblies()
         {
             string[] existingRuntimeAssemblies = File.ReadAllLines(ExistingRuntimeAssembliesFileName);
-            string[] generatedRuntimeAssemblies = File.ReadAllLines(Path.Combine(Directory.GetCurrentDirectory(), GeneratedRuntimeAssembliesFileName));
+            string[] generatedRuntimeAssemblies = File.ReadAllLines(GeneratedRuntimeAssembliesFileName);
 
             IEnumerable<string> diffAdded = generatedRuntimeAssemblies.Except(existingRuntimeAssemblies);
             var result = diffAdded.Select(s => $"Added: {s}");

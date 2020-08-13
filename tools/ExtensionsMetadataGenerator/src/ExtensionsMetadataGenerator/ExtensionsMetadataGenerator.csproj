@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="UpdateRuntimeAssemblies">
   <Import Project="..\..\build\metadatagenerator.props" />
   <PropertyGroup>
     <VersionPrefix>1.1.8</VersionPrefix>
