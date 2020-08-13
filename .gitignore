@@ -24,3 +24,4 @@ tools/ExtensionsMetadataGenerator/packages
 /node_modules
 /.output
 /buildoutput
+/tools/ExtensionsMetadataGenerator/src/ExtensionsMetadataGenerator/runtimeassemblies.txt

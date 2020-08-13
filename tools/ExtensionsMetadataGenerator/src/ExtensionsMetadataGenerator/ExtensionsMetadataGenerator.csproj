@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <Target Name="UpdateRuntimeAssemblies" BeforeTargets="Build">
-    <Exec Command="powershell.exe –command .\updateruntimeassemblies.ps1"/>
+    <Exec Command="powershell.exe –command .\updateruntimeassemblies.ps1" />
   </Target>
   
   <Target Name="PackReferenceAssemblies">
@@ -45,16 +45,6 @@
       </Content>
     </ItemGroup>
   </Target>
-
-  <ItemGroup>
-    <None Remove="runtimeassemblies.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="runtimeassemblies.txt">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Framework" Version="15.3.409">
@@ -72,6 +62,12 @@
     <PackageReference Include="System.Runtime.Loader">
       <Version>4.3.0</Version>
     </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="runtimeAssemblies.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   
 </Project>
