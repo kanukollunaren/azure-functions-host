@@ -185,6 +185,7 @@ namespace Microsoft.Azure.WebJobs.Script.WebHost.Controllers
         public IActionResult Download([FromServices] IOptions<ScriptApplicationHostOptions> webHostOptions)
         {
             var path = webHostOptions.Value.ScriptPath;
+            _logger.LogInformation($"Download Path is {path}");
             var dirInfo = FileUtility.DirectoryInfoFromDirectoryName(path);
             return new FileCallbackResult(new MediaTypeHeaderValue("application/octet-stream"), async (outputStream, _) =>
             {
@@ -192,6 +193,7 @@ namespace Microsoft.Azure.WebJobs.Script.WebHost.Controllers
                 {
                     foreach (FileSystemInfoBase fileSysInfo in dirInfo.GetFileSystemInfos())
                     {
+                        _logger.LogInformation($"File is {fileSysInfo.FullName}");
                         if (fileSysInfo is DirectoryInfoBase directoryInfo)
                         {
                             await zipArchive.AddDirectory(directoryInfo, fileSysInfo.Name);
